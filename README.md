@@ -7,6 +7,15 @@ freebind.js is only supported on Linux -- it **won't** work on other platforms (
 
 note that it is still **very experimental**, potential bug reports and pull requests are welcome.
 
+## setup
+the setup is the same as you would expect from the original freebind project:
+> Assume your ISP has assigned the subnet `2a00:1450:4001:81b::/64` to your server. In order to make use of freebinding, you first need to configure the [Linux AnyIP kernel feature](https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=ab79ad14a2d51e95f0ac3cef7cd116a57089ba82) in order to be able to bind a socket to an arbitrary IP address from this subnet as follows:
+> ```
+> ip -6 route add local 2a00:1450:4001:81b::/64 dev lo
+> ```
+
+
+
 ## usage
 freebind supports creating TCP sockets, and also provides a dispatcher wrapper for use with `undici` (aka native node >=18 fetch)
 
