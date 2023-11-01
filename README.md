@@ -32,7 +32,7 @@ const example1 = async () => console.log(
     ).then(a => a.text())
 )
 
-// connections on IPs can be held open
+// connections on IPs may be held open
 // unless you explicitly close the connection
 await example1(); // ~> fc00:dead:beef:4465:f5e0:26d4:2921:6891
 await example1(); // ~> fc00:dead:beef:4465:f5e0:26d4:2921:6891
