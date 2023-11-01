@@ -1,0 +1,15 @@
+{
+  "name": "freebind",
+  "version": "0.0.1",
+  "type": "module",
+  "main": "index.js",
+  "repository": "https://github.com/dumbmoron/freebind.git",
+  "author": "dumbmoron <log@riseup.net>",
+  "license": "AGPL-3.0",
+  "private": false,
+  "dependencies": {
+    "ipaddr.js": "2.1.0",
+    "syscall-napi": "0.0.6",
+    "undici": "^5.27.0"
+  }
+}
