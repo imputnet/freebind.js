@@ -1,7 +1,9 @@
 # freebind.js
 [npm](https://www.npmjs.com/package/freebind)
 
-inspired by [freebind](https://github.com/blechschmidt/freebind) (the C project), this library allows you to bind sockets to random IP addresses from specified prefixes. freebind.js is only supported on Linux -- it **won't** work on other platforms (since they don't have a FREEBIND socket option).
+inspired by [freebind](https://github.com/blechschmidt/freebind) (the C project), this library takes advantage of the **IP_FREEBIND** socket option on Linux and allows you to bind sockets to random IP addresses from specified prefixes.
+
+freebind.js is only supported on Linux -- it **won't** work on other platforms (since they don't have a FREEBIND socket option).
 
 note that it is still **very experimental**, potential bug reports and pull requests are welcome.
 
@@ -10,7 +12,7 @@ freebind supports creating TCP sockets, and also provides a dispatcher wrapper f
 
 ### fetch
 ```js
-import { randomDispatcher } from './index.js'
+import { randomDispatcher } from 'freebind'
 
 const dispatcher = randomDispatcher('fc00:dead:beef::/48')
 
@@ -45,7 +47,7 @@ await example2(); // ~> fc00:dead:beef:3a48:bb50:d193:471c:f553
 
 ### tcp
 ```js
-import { tcp } from './index.js'
+import { tcp } from 'freebind'
 
 // a random address will be bound to this socket
 const sock = await tcp.createRandomSocket('::1', 9999, 'fc00:dead:beef::/48')
