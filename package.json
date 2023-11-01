@@ -1,9 +1,9 @@
 {
   "name": "freebind",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "type": "module",
   "main": "index.js",
-  "repository": "https://github.com/dumbmoron/freebind.git",
+  "repository": "https://github.com/dumbmoron/freebind.js.git",
   "author": "dumbmoron <log@riseup.net>",
   "license": "AGPL-3.0",
   "private": false,

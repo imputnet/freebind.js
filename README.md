@@ -1,5 +1,5 @@
 # freebind.js
-[npm](https://www.npmjs.com/package/freebind)
+[npm](https://www.npmjs.com/package/freebind) | [github](https://github.com/dumbmoron/freebind.js)
 
 inspired by [freebind](https://github.com/blechschmidt/freebind) (the C project), this library takes advantage of the **IP_FREEBIND** socket option on Linux and allows you to bind sockets to random IP addresses from specified prefixes.
 
