@@ -52,6 +52,33 @@ await example2(); // ~> fc00:dead:beef:31cd:a6e7:be0b:6872:b51a
 await example2(); // ~> fc00:dead:beef:8f8e:c97f:2ba2:3a6:9d7b
 await example2(); // ~> fc00:dead:beef:3a48:bb50:d193:471c:f553
 
+
+/** If a hostname has no IPv6 (AAAA) record while you are trying to access
+ ** it via IPv6 (or vice versa for IPv4 - although that would be pretty rare),
+ ** freebind.js will throw an exception. This can be overridden by using { strict: false },
+ ** which will make it fall back to regular fetch with IPv4. This is not the default
+ ** because in many cases, this is not what you really want. **/
+const dispatcher2 = randomDispatcher('fc00:dead:beef::/48')
+const example3 = async () => console.log(
+    await fetch(
+        'https://ipinfo.io/json',
+        { dispatcher,
+          headers: { connection: 'close' }
+        }
+    ).then(a => a.text())
+) // ~> Uncaught 'family mismatch for addr 34.117.59.81'
+
+const dispatcher3 = randomDispatcher('fc00:dead:beef::/48', { strict: false })
+const example4 = async () => console.log(
+    await fetch(
+        'https://ipinfo.io/json',
+        { dispatcher,
+          headers: { connection: 'close' }
+        }
+    ).then(a => a.text())
+) // ~> {"ip":"127.0.0.1", "city": ...
+
+
 ```
 
 ### tcp
