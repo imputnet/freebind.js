@@ -40,7 +40,8 @@ async function enableFreebind(fd) {
 // todo: createDgram
 export async function createSocket(host, port, localAddress, connectOptions) {
     const addrFamily = ipaddr.parse(host).kind()
-    assert(addrFamily == ipaddr.parse(localAddress).kind())
+    if (connectOptions.strict !== false)
+        assert(addrFamily == ipaddr.parse(localAddress).kind())
 
     const fd = await initSocket(addrFamily, 'tcp');
     await enableFreebind(fd);
@@ -49,21 +50,38 @@ export async function createSocket(host, port, localAddress, connectOptions) {
     sock.connect({
        ...connectOptions,
        host, port,
-       localAddress
+       localAddress: connectOptions.familyMatching
+                     ? localAddress
+                     : undefined
     })
 
     return sock
 }
 
+async function lookup(hostname, family) {
+    const OTHER_FAMILY = {4: 6, 6: 4};
+
+    let host;
+    try {
+        host = await dns.lookup(hostname, { family });
+    } catch {
+        host = await dns.lookup(hostname, { family: OTHER_FAMILY[ family ] });
+    }
+
+    return host;
+}
+
 // `bits` defines how many bits to fill from the MSB to the LSB
 // needs to be <= length of the prefix
-export async function createRandomSocket(hostname, port, localCIDR, connectOptions, bits) {
+export async function createRandomSocket(hostname, port, localCIDR, options) {
+    const { bits, strict, ...connectOptions } = options;
     const { addr, kind } = generateRandomIP(localCIDR, bits);
     const family = ({ 'ipv4': 4, 'ipv6': 6 })[ kind ];
-    const host = await dns.lookup(hostname, { family });
 
-    if (family != host.family)
+    const host = await lookup(hostname, family);
+    const familyMatching = family === host.family;
+    if (!familyMatching && strict !== false)
         throw 'family mismatch for addr ' + host.address
 
-    return await createSocket(host.address, port, addr, connectOptions)
+    return await createSocket(host.address, port, addr, { ...connectOptions, strict, familyMatching })
 }

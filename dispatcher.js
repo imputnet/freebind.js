@@ -6,7 +6,7 @@ function resolvePort(protocol, port) {
     return port ? Number.parseInt(port) : protocol === "http:" ? 80 : 443
 }
 
-export function createRandomConnector(cidr, bits, tlsOpts = {}) {
+export function createRandomConnector(cidr, tlsOpts = {}, sockOpts = {}) {
     const undiciConnect = buildConnector(tlsOpts)
 
     return async (options, callback) => {
@@ -18,14 +18,13 @@ export function createRandomConnector(cidr, bits, tlsOpts = {}) {
                 hostname,
                 resolvePort(protocol, port),
                 cidr,
-                undefined,
-                bits
+                sockOpts
             )
         }, callback);
     };
 }
 
 export function randomDispatcher(cidr, options = {}) {
-    const { connect, bits, ...rest } = options
-    return new Agent({ ...rest, connect: createRandomConnector(cidr, bits, connect) })
+    const { connect, ...rest } = options
+    return new Agent({ ...rest, connect: createRandomConnector(cidr, connect, rest) })
 }
