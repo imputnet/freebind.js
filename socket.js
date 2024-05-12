@@ -1,5 +1,5 @@
 import sys from 'syscall-napi'
-import ipaddr from 'ipaddr.js'
+import ip from 'ipaddr.js'
 import { Socket } from 'node:net'
 import dns from 'node:dns/promises'
 import { strict as assert } from 'node:assert'
@@ -39,9 +39,10 @@ async function enableFreebind(fd) {
 
 // todo: createDgram
 export async function createSocket(host, port, localAddress, connectOptions) {
-    const addrFamily = ipaddr.parse(host).kind()
-    if (connectOptions.strict !== false)
-        assert(addrFamily == ipaddr.parse(localAddress).kind())
+    const addrFamily = ip.parse(host).kind()
+    if (connectOptions.strict !== false) {
+        assert(addrFamily == ip.parse(localAddress).kind())
+    }
 
     const fd = await initSocket(addrFamily, 'tcp');
     await enableFreebind(fd);
@@ -71,17 +72,28 @@ async function lookup(hostname, family) {
     return host;
 }
 
-// `bits` defines how many bits to fill from the MSB to the LSB
-// needs to be <= length of the prefix
-export async function createRandomSocket(hostname, port, localCIDR, options) {
-    const { bits, strict, ...connectOptions } = options;
-    const { addr, kind } = generateRandomIP(localCIDR, bits);
+export async function createSocketFromHostname(hostname, port, sourceIP, options) {
+    const { strict, ...connectOptions } = options;
+
+    const kind = ip.parse(sourceIP).kind();
     const family = ({ 'ipv4': 4, 'ipv6': 6 })[ kind ];
 
     const host = await lookup(hostname, family);
     const familyMatching = family === host.family;
-    if (!familyMatching && strict !== false)
-        throw 'family mismatch for addr ' + host.address
+    if (!familyMatching && strict !== false) {
+        throw 'family mismatch for addr ' + host.address;
+    }
 
-    return await createSocket(host.address, port, addr, { ...connectOptions, strict, familyMatching })
+    return createSocket(
+        host.address, port, sourceIP, 
+        { ...connectOptions, strict, familyMatching }
+    );
+}
+
+// `bits` defines how many bits to fill from the MSB to the LSB
+// needs to be <= length of the prefix
+export function createRandomSocket(hostname, port, localCIDR, options) {
+    const { bits, ...rest } = options;
+    const addr = generateRandomIP(localCIDR, bits);
+    return createSocketFromHostname(hostname, port, addr, rest);
 }

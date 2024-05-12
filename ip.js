@@ -23,9 +23,7 @@ function generateRandomIPArray({ bytes, available }, count = available) {
 }
 
 export function generateRandomIP(cidr, count) {
-    const addr = ip.fromByteArray(
+    return ip.fromByteArray(
         generateRandomIPArray(parseCIDR(cidr), count)
-    );
-
-    return { addr: addr.toString(), kind: addr.kind() };
+    ).toString();
 }

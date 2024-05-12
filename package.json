@@ -1,6 +1,6 @@
 {
   "name": "freebind",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "bind sockets to random IP addresses from specified prefixes",
   "keywords": ["anyip", "rate-limit", "socket", "ipv6", "ratelimiting"],
   "type": "module",
