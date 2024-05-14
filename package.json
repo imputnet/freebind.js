@@ -5,7 +5,7 @@
   "keywords": ["anyip", "rate-limit", "socket", "ipv6", "ratelimiting"],
   "type": "module",
   "main": "index.js",
-  "repository": "https://github.com/dumbmoron/freebind.js.git",
+  "repository": "https://github.com/imputnet/freebind.js.git",
   "author": "dumbmoron <log@riseup.net>",
   "license": "AGPL-3.0",
   "private": false,
