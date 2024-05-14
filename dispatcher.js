@@ -10,18 +10,34 @@ function resolvePort(protocol, port) {
 export function createConnectorFromIP(ip, tlsOpts = {}, sockOpts = {}) {
     const undiciConnect = buildConnector(tlsOpts)
 
-    return async (options, callback) => {
+    return (options, callback) => {
         let { protocol, hostname, port } = options;
 
-        return undiciConnect({
-            ...options,
-            httpSocket: await createSocketFromHostname(
-                hostname,
-                resolvePort(protocol, port),
-                ip,
-                sockOpts
-            )
-        }, callback);
+        createSocketFromHostname(
+            hostname,
+            resolvePort(protocol, port),
+            ip,
+            sockOpts
+        )
+        .then(httpSocket => undiciConnect({ ...options, httpSocket }, callback))
+        .catch(err => callback(err))
+    };
+}
+
+export function createRandomConnector(cidr, tlsOpts = {}, sockOpts = {}) {
+    const undiciConnect = buildConnector(tlsOpts)
+
+    return (options, callback) => {
+        let { protocol, hostname, port } = options;
+
+        createRandomSocket(
+            hostname,
+            resolvePort(protocol, port),
+            cidr,
+            sockOpts
+        )
+        .then(httpSocket => undiciConnect({ ...options, httpSocket }, callback))
+        .catch(err => callback(err))
     };
 }
 
@@ -29,24 +45,6 @@ export function createRandomStickyConnector(cidr, tlsOpts, options) {
     const { bits, ...sockOpts } = options;
     const ip = generateRandomIP(cidr, bits);
     return createConnectorFromIP(ip, tlsOpts, sockOpts);
-}
-
-export function createRandomConnector(cidr, tlsOpts = {}, sockOpts = {}) {
-    const undiciConnect = buildConnector(tlsOpts)
-
-    return async (options, callback) => {
-        let { protocol, hostname, port } = options;
-
-        return undiciConnect({
-            ...options,
-            httpSocket: await createRandomSocket(
-                hostname,
-                resolvePort(protocol, port),
-                cidr,
-                sockOpts
-            )
-        }, callback);
-    };
 }
 
 export function dispatcherFromIP(ip, options = {}) {
