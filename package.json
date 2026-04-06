@@ -1,6 +1,6 @@
 {
   "name": "freebind",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "bind sockets to random IP addresses from specified prefixes",
   "keywords": ["anyip", "rate-limit", "socket", "ipv6", "ratelimiting"],
   "type": "module",
@@ -12,6 +12,9 @@
   "dependencies": {
     "ipaddr.js": "2.1.0",
     "syscall-napi": "0.0.6",
-    "undici": "^5.27.0"
+    "undici": "^6.24.1"
+  },
+  "engines": {
+    "node": ">=18.17"
   }
 }
